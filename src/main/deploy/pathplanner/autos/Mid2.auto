@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid Start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid Pick"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidShoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Mid",
+  "choreoAuto": false
+}

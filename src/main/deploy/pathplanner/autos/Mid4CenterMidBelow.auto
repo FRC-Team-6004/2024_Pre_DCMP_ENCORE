@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid Start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid Pick"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid Middle Pick"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid Middle Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid Middle Down Pick"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid Middle Down Shoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Mid",
+  "choreoAuto": false
+}

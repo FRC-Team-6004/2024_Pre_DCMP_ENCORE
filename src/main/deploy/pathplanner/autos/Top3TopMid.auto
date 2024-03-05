@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Close Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Close to Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Shoot to Mid Top"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid Top to Shoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Top",
+  "choreoAuto": false
+}
