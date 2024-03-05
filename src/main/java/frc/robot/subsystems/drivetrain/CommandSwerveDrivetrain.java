@@ -97,8 +97,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                     if(alliance.isPresent()) {
                         return alliance.get() == DriverStation.Alliance.Red;
                        } 
-          return false;
-                    }, // Change this if the path needs to be flipped on red vs blue
+          return false;}, // Change this if the path needs to be flipped on red vs blue
             this); // Subsystem for requirements
     }
 
