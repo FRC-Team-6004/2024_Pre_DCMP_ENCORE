@@ -63,7 +63,7 @@ public class RobotContainer {
   private final CommandXboxController driveStick = new CommandXboxController(0); //drivestick
   private final CommandXboxController opStick = new CommandXboxController(1); // My joystick
 
-  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
+  public final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.025) // Add a 10% deadband
