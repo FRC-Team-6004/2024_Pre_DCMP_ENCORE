@@ -53,7 +53,7 @@ public class ShooterSubsystem extends SubsystemBase {
         var bottomMotorConfigurator = bottomFalcon.getConfigurator();
         var topMotorConfigurator = topFalcon.getConfigurator();
         var bottomMotorConfiguration = new TalonFXConfiguration();
-        
+
         bottomMotorConfiguration.MotorOutput.Inverted = ShooterConstants.SHOOTER_INVERSION;
         bottomMotorConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         bottomMotorConfiguration.CurrentLimits = ShooterConstants.SHOOTER_CURRENT_LIMIT;
