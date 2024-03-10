@@ -163,15 +163,9 @@ public class RobotContainer {
 
     driveStick.leftBumper().whileTrue(
 
-    private final var rot_limelight = limelight_aim_proportional();
-    rot = rot_limelight;
-
-    private final var forward_limelight = limelight_range_proportional();
-    xSpeed = forward_limelight;
-    
-    drivetrain.applyRequest(() -> drive.withVelocityX(forward_limelight)
+    drivetrain.applyRequest(() -> drive.withVelocityX(limelight_range_proportional())
             .withVelocityY(-driveStick.getLeftX() * MaxSpeed*(.4))
-            .withRotationalRate(rot_limelight)));
+            .withRotationalRate(limelight_aim_proportional())));
 
             
     // reset the field-centric heading on left bumper press
