@@ -58,8 +58,8 @@ public class RobotContainer {
     public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public final VisionSubsystem visionSubsystem = new VisionSubsystem();
 
-  private double MaxSpeed = 5 *(.75); // 6 meters per second desired top speed change the decimal for speeding up
-  private double MaxAngularRate = 2 * Math.PI *(.9); // 3/4 of a rotation per second max angular velocity
+  private double MaxSpeed = 5; // 6 meters per second desired top speed change the decimal for speeding up
+  private double MaxAngularRate = 2 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController driveStick = new CommandXboxController(0); //drivestick
@@ -76,6 +76,7 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   SendableChooser<Command> m_chooser = new SendableChooser<>();
+  
   private final Command Top2Piece = new PathPlannerAuto("Top2Piece");
   private final Command Top3Close = new PathPlannerAuto("Top3Close");
   private final Command Top3TopMid = new PathPlannerAuto("Top3TopMid");
@@ -148,10 +149,10 @@ public class RobotContainer {
         ));
 
     driveStick.leftTrigger().whileTrue( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(-driveStick.getLeftY() * MaxSpeed*(.4)) // Drive forward with
+        drivetrain.applyRequest(() -> drive.withVelocityX(-driveStick.getLeftY() * MaxSpeed*(.35)) // Drive forward with
                                                                                            // negative Y (forward)
-            .withVelocityY(-driveStick.getLeftX() * MaxSpeed*(.4)) // Drive left with negative X (left)
-            .withRotationalRate(-driveStick.getRightX() * MaxAngularRate*(.4) // Drive counterclockwise with negative X (left)
+            .withVelocityY(-driveStick.getLeftX() * MaxSpeed*(.35)) // Drive left with negative X (left)
+            .withRotationalRate(-driveStick.getRightX() * MaxAngularRate*(.35) // Drive counterclockwise with negative X (left)
         )));    
        
   

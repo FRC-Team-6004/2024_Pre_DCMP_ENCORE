@@ -50,30 +50,34 @@ public class ShooterSubsystem extends SubsystemBase {
     public ShooterSubsystem() {
         topFalcon = new TalonFX(ShooterConstants.SHOOTER_TOP_MOTOR);
         bottomFalcon = new TalonFX(ShooterConstants.SHOOTER_BOTTOM_MOTOR);
-        var bottomMotorConfigurator = bottomFalcon.getConfigurator();
-        var topMotorConfigurator = topFalcon.getConfigurator();
+        bumpFalcon = new TalonFX(ShooterConstants.SHOOTER_BUMP);
+        beamBreak = new DigitalInput(ShooterConstants.BEAM_BREAK);
+   
         var bottomMotorConfiguration = new TalonFXConfiguration();
+        var topMotorConfiguration = new TalonFXConfiguration();
+        var bumpMotorConfiguration = new TalonFXConfiguration();
 
         bottomMotorConfiguration.MotorOutput.Inverted = ShooterConstants.SHOOTER_INVERSION;
         bottomMotorConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        bottomMotorConfiguration.CurrentLimits = ShooterConstants.SHOOTER_CURRENT_LIMIT;
+        bottomMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 60;
+        bottomMotorConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
         bottomMotorConfiguration.Slot0 = ShooterConstants.SLOT_0_CONFIGS;
+
+        topMotorConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        topMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 60;
+        topMotorConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
+        topMotorConfiguration.Slot0 = ShooterConstants.SLOT_0_CONFIGS;
+
+        bumpMotorConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        bumpMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 60;
+        bumpMotorConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
+
         topFalcon.setControl(new Follower(bottomFalcon.getDeviceID(), true));
-        shooterStatus = ShooterStatus.OFF;
-         shooterModes = ShooterModes.TRAP;
-
-
-
-
-         bumpFalcon = new TalonFX(ShooterConstants.SHOOTER_BUMP);
-
-         beamBreak = new DigitalInput(ShooterConstants.BEAM_BREAK);
-
-
+   
     }
 
     @Override
- public void periodic() {
+   public void periodic() {
 
    }
     public boolean getBeamBreak(){
@@ -105,9 +109,6 @@ public class ShooterSubsystem extends SubsystemBase {
         bottomFalcon.set(-speed);
         topFalcon.set(speed);
         System.out.println("Shoot");
-
-      //  bumpFalcon.set(0.9); //
-    // shooterStatus = ShooterStatus.FORWARD;
     }
 
     public void setMode(ShooterModes mode) {
@@ -123,10 +124,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public void stopFlywheel() {
         bottomFalcon.set(0);
         topFalcon.set(0);
-       // bumpFalcon.stopMotor();
         System.out.println("Stop Shoot");
-
-        shooterStatus = ShooterStatus.OFF;
     }
 
     public double getBottomEncoder() {

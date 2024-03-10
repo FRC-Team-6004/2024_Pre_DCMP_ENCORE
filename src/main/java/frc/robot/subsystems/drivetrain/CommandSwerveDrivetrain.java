@@ -145,9 +145,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             TalonFX driveMotor = swerveModule.getDriveMotor();
             driveMotor.getConfigurator().refresh(currentLimits);
 
-            currentLimits.SupplyCurrentLimit = 40;
-            currentLimits.SupplyCurrentThreshold = 55;
-            currentLimits.SupplyTimeThreshold = 0.1;
+            currentLimits.SupplyCurrentLimit = 60;
+            currentLimits.SupplyCurrentThreshold = 80;
+            currentLimits.SupplyTimeThreshold = 0.5;
             currentLimits.SupplyCurrentLimitEnable = true;
             driveMotor.getConfigurator().apply(currentLimits);
         }
@@ -159,9 +159,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             TalonFX driveMotor = swerveModule.getSteerMotor();
             driveMotor.getConfigurator().refresh(currentLimits);
 
-            currentLimits.SupplyCurrentLimit = 20;
-            currentLimits.SupplyCurrentThreshold = 25;
-            currentLimits.SupplyTimeThreshold = 0.1;
+            currentLimits.SupplyCurrentLimit = 30;
+            currentLimits.SupplyCurrentThreshold = 40;
+            currentLimits.SupplyTimeThreshold = 0.25;
             currentLimits.SupplyCurrentLimitEnable = true;
             driveMotor.getConfigurator().apply(currentLimits);
         }
