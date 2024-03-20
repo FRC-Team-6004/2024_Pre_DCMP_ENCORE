@@ -5,26 +5,28 @@
 package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
-
 import edu.wpi.first.math.geometry.Pose2d;
-
-//import com.ctre.phoenix.sensors.WPI_PigeonIMU;
-
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.util.LimelightHelpers;
 
+
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  LimelightHelpers.Results lastResult;
+  boolean buildAuto = true;
 
 
   private final boolean UseLimelight = true;
 
   @Override
+
+  
   public void robotInit() {
     m_robotContainer = new RobotContainer();
   }
@@ -32,17 +34,8 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotPeriodic() {
-    CommandScheduler.getInstance().run(); 
-
-       if (UseLimelight) {
-      var lastResult = LimelightHelpers.getLatestResults("limelight").targetingResults;
-
-      Pose2d llPose = lastResult.getBotPose2d_wpiBlue();
-
-      if (lastResult.valid) {
-        m_robotContainer.drivetrain.addVisionMeasurement(llPose, Timer.getFPGATimestamp());
-      }
-    }     
+    CommandScheduler.getInstance().run();  
+    lastResult = LimelightHelpers.getLatestResults("limelight").targetingResults; 
 
   }
 
@@ -67,7 +60,22 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+/* 
+       if (DriverStation.getAlliance().isPresent()) {
+            if (DriverStation.getAlliance().get() == (DriverStation.Alliance.Red)) {
+                if (lastResult != null && lastResult.valid) {
+                    Pose2d llPose = lastResult.getBotPose2d_wpiRed();
+                    m_robotContainer.drivetrain.addVisionMeasurement(llPose, Timer.getFPGATimestamp());
+                }
+            } else {
+                if (lastResult != null && lastResult.valid) {
+                    Pose2d llPose = lastResult.getBotPose2d_wpiBlue();
+                    m_robotContainer.drivetrain.addVisionMeasurement(llPose, Timer.getFPGATimestamp());
+                }
+            }
+        }  */
+  }
 
   @Override
   public void autonomousExit() {}
@@ -80,7 +88,22 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+    if (DriverStation.getAlliance().isPresent()) {
+      if (DriverStation.getAlliance().get() == (DriverStation.Alliance.Red)) {
+          if (lastResult != null && lastResult.valid) {
+              Pose2d llPose = lastResult.getBotPose2d_wpiRed();
+              m_robotContainer.drivetrain.addVisionMeasurement(llPose, Timer.getFPGATimestamp());
+          }
+      } else {
+          if (lastResult != null && lastResult.valid) {
+              Pose2d llPose = lastResult.getBotPose2d_wpiBlue();
+              m_robotContainer.drivetrain.addVisionMeasurement(llPose, Timer.getFPGATimestamp());
+          }
+      }
+  }
+  }
 
   @Override
   public void teleopExit() {}

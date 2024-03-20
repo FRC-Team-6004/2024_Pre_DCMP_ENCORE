@@ -1,0 +1,19 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Shoot To Mid Close"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Sketchy",
+  "choreoAuto": false
+}

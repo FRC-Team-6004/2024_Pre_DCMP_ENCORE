@@ -59,17 +59,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
         bottomMotorConfiguration.MotorOutput.Inverted = ShooterConstants.SHOOTER_INVERSION;
         bottomMotorConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        bottomMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 60;
+        bottomMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 55;
         bottomMotorConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
         bottomMotorConfiguration.Slot0 = ShooterConstants.SLOT_0_CONFIGS;
 
         topMotorConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        topMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 60;
+        topMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 55;
         topMotorConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
         topMotorConfiguration.Slot0 = ShooterConstants.SLOT_0_CONFIGS;
 
         bumpMotorConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        bumpMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 60;
+        bumpMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 55;
         bumpMotorConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
 
         topFalcon.setControl(new Follower(bottomFalcon.getDeviceID(), true));
@@ -80,6 +80,7 @@ public class ShooterSubsystem extends SubsystemBase {
    public void periodic() {
 
    }
+   
     public boolean getBeamBreak(){
         return beamBreak.get();
     }

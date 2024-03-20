@@ -1,0 +1,25 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.44120069237763326,
+      "y": 4.192396033248124
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Start"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Sketchy",
+  "choreoAuto": false
+}

@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidRush1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidRush2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidRush3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidRush4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidRush5"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Bottom",
+  "choreoAuto": false
+}

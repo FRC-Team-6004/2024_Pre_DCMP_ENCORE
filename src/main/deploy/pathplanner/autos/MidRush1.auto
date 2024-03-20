@@ -1,0 +1,25 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.400090600751002,
+      "y": 4.15
+    },
+    "rotation": 0.21154367772520366
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidRush1"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Sketchy",
+  "choreoAuto": false
+}

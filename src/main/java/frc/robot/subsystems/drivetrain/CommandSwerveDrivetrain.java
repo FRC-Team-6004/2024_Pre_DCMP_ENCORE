@@ -28,6 +28,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
@@ -47,8 +48,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private double m_lastSimTime;
     StructArrayPublisher<SwerveModuleState> publisher;
 
+    private final Rotation2d BluePerspectiveRotation = Rotation2d.fromDegrees(0);
+    private final Rotation2d RedPerspectiveRotation = Rotation2d.fromDegrees(180);
 
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
+
+    private boolean hasAppliedPerspective = false;
+
 
     WPI_PigeonIMU gyro = new WPI_PigeonIMU(0);
 
@@ -76,14 +82,16 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public void periodic() {
         publisher.set(super.getState().ModuleStates);
 
-   NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-   NetworkTable limelight1 = NetworkTableInstance.getDefault().getTable("limelight1");
-   NetworkTable limelight2 = NetworkTableInstance.getDefault().getTable("limelight2");
-
-        
+        if(!hasAppliedPerspective || DriverStation.isDisabled()) {
+            DriverStation.getAlliance().ifPresent((allianceColor) -> {
+                this.setOperatorPerspectiveForward(
+                        allianceColor == DriverStation.Alliance.Red ? RedPerspectiveRotation
+                                : BluePerspectiveRotation);
+                hasAppliedPerspective = true;
+            });
 
     }
-
+}
     private void configurePathPlanner() {
         double driveBaseRadius = 0;
         for (var moduleLocation : m_moduleLocations) {
@@ -167,4 +175,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         }
     }
     
+    public void ZeroGyro(){
+        gyro.reset();
+    }
 }

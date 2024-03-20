@@ -58,7 +58,9 @@ public class RobotContainer {
     public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public final VisionSubsystem visionSubsystem = new VisionSubsystem();
 
-  private double MaxSpeed = 5; // 6 meters per second desired top speed change the decimal for speeding up
+    
+
+  private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // 6 meters per second desired top speed change the decimal for speeding up
   private double MaxAngularRate = 2 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
   /* Setting up bindings for necessary control of the swerve drive platform */
@@ -68,7 +70,7 @@ public class RobotContainer {
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.025) // Add a 10% deadband
+      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -77,24 +79,314 @@ public class RobotContainer {
 
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   
-  private final Command Top2Piece = new PathPlannerAuto("Top2Piece");
-  private final Command Top3Close = new PathPlannerAuto("Top3Close");
-  private final Command Top3TopMid = new PathPlannerAuto("Top3TopMid");
-  private final Command Top4Piece2CloseTopMid = new PathPlannerAuto("Top4Piece2CloseTopMid");
-  private final Command Top4PieceCloseAll = new PathPlannerAuto("Top4PieceCloseAll");
-  private final Command Top5Piece2Close2TopMid = new PathPlannerAuto("Top5Piece2Close2TopMid");
-
-  private final Command Bottom2Piece = new PathPlannerAuto("Bottom2Piece");
-  private final Command Bottom3Close = new PathPlannerAuto("Bottom3Close");
-  private final Command Bottom3Mid = new PathPlannerAuto("Bottom3Mid");
-  private final Command Bottom4Close2Mid = new PathPlannerAuto("Bottom4Close2Mid");
-  private final Command Bottom4CloseAll = new PathPlannerAuto("Bottom4CloseAll");
+  private final Command Top2Piece = new SequentialCommandGroup(
+          new ParallelCommandGroup(
+              new PathPlannerAuto("Top Start"),
+              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.29))),
+           new WaitCommand(.5),
+           new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+           new WaitCommand(.5),
+           new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> intakeSubsystem.roll(1)),
+           new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
+           new PathPlannerAuto("Top Close Note"),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
+           new WaitCommand(.15),
+          // new InstantCommand(()-> intakeSubsystem.rollStop()),
+           new ParallelCommandGroup(
+              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
+              new PathPlannerAuto("Top Close to Shoot")),
+          //new WaitCommand(.5),
+          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+          new WaitCommand(.5),
+          new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
+          new InstantCommand(()-> shooterSubsystem.stopBump()),
+          new InstantCommand(()-> intakeSubsystem.rollStop())
+          );
   
-  private final Command Mid2 = new PathPlannerAuto("Mid2");
-  private final Command Mid3CenterMid = new PathPlannerAuto("Mid3CenterMid");
-  private final Command Mid4CenterMidBelow = new PathPlannerAuto("Mid4CenterMidBelow");
-  private final Command Mid4CenterMidUp = new PathPlannerAuto("Mid4CenterMidUp");
-  private final Command Mid5CenterMid3 = new PathPlannerAuto("Mid5CenterMid3");
+  private final Command Top3Close = new SequentialCommandGroup(
+     new ParallelCommandGroup(
+              new PathPlannerAuto("Top Start"),
+              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.29))),
+           new WaitCommand(.5),
+           new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+           new WaitCommand(.5),
+           new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> intakeSubsystem.roll(1)),
+           new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
+           new PathPlannerAuto("Top Close Note"),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
+           new WaitCommand(.15),
+          // new InstantCommand(()-> intakeSubsystem.rollStop()),
+           new ParallelCommandGroup(
+              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
+              new PathPlannerAuto("Top Close to Shoot")),
+          //new WaitCommand(.5),
+          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+          new WaitCommand(.5),
+          new InstantCommand(()-> intakeSubsystem.roll(1)),
+         new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
+         new PathPlannerAuto("Shoot To Mid Close"),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
+           new WaitCommand(.15),
+           new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
+          new PathPlannerAuto("Mid Close to Shoot"),
+          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+          new WaitCommand(.5),
+          new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
+          new InstantCommand(()-> shooterSubsystem.stopBump()),
+          new InstantCommand(()-> intakeSubsystem.rollStop())
+  );
+
+  private final Command Top3TopMid = new SequentialCommandGroup(
+    new ParallelCommandGroup(
+              new PathPlannerAuto("Top Start"),
+              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.29))),
+           new WaitCommand(.5),
+           new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+           new WaitCommand(.5),
+           new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> intakeSubsystem.roll(1)),
+           new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
+           new PathPlannerAuto("Top Close Note"),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
+           new WaitCommand(.15),
+          // new InstantCommand(()-> intakeSubsystem.rollStop()),
+           new ParallelCommandGroup(
+              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
+              new PathPlannerAuto("Top Close to Shoot")),
+          //new WaitCommand(.5),
+          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+          new WaitCommand(.5),
+          new InstantCommand(()-> intakeSubsystem.roll(1)),
+         new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
+         new PathPlannerAuto("Top Shoot to Mid Top"),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
+           new WaitCommand(.15),
+           new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
+          new PathPlannerAuto("Mid Top to Shoot"),
+          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+          new WaitCommand(.5),
+          new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
+          new InstantCommand(()-> shooterSubsystem.stopBump()),
+          new InstantCommand(()-> intakeSubsystem.rollStop())
+  );
+
+
+
+  private final Command Top4Piece2CloseTopMid = new SequentialCommandGroup(
+      new ParallelCommandGroup(
+              new PathPlannerAuto("Top Start"),
+              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.29))),
+           new WaitCommand(.5),
+           new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+           new WaitCommand(.5),
+           new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> intakeSubsystem.roll(1)),
+           new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
+           new PathPlannerAuto("Top Close Note"),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
+           new WaitCommand(.15),
+          // new InstantCommand(()-> intakeSubsystem.rollStop()),
+           new ParallelCommandGroup(
+              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
+              new PathPlannerAuto("Top Close to Shoot")),
+          //new WaitCommand(.5),
+          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+          new WaitCommand(.5),
+          new InstantCommand(()-> intakeSubsystem.roll(1)),
+         new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
+          new PathPlannerAuto("Shoot To Mid Close"),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
+           new WaitCommand(.15),
+           new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
+          new PathPlannerAuto("Mid Close to Shoot"),
+          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+          new WaitCommand(.5),
+         new PathPlannerAuto("Top Shoot to Mid Top"),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
+           new WaitCommand(.15),
+           new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
+          new PathPlannerAuto("Mid Top to Shoot"),
+          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+          new WaitCommand(.5),
+          new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
+          new InstantCommand(()-> shooterSubsystem.stopBump()),
+          new InstantCommand(()-> intakeSubsystem.rollStop())
+  );
+
+
+  private final Command Top4PieceCloseAll = new SequentialCommandGroup(
+new ParallelCommandGroup(
+              new PathPlannerAuto("Top Start"),
+              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.29))),
+           new WaitCommand(.5),
+           new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+           new WaitCommand(.5),
+           new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> intakeSubsystem.roll(1)),
+           new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
+           new PathPlannerAuto("Top Close Note"),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
+           new WaitCommand(.15),
+          // new InstantCommand(()-> intakeSubsystem.rollStop()),
+           new ParallelCommandGroup(
+              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
+              new PathPlannerAuto("Top Close to Shoot")),
+          new WaitCommand(.5),
+          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+          new WaitCommand(.5),
+          new InstantCommand(()-> intakeSubsystem.roll(1)),
+         new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
+            new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
+          new PathPlannerAuto("Shoot To Mid Close"),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
+           new WaitCommand(.15),
+           new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
+          new PathPlannerAuto("Mid Close to Shoot"),
+          new WaitCommand(.5),
+          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+          new WaitCommand(.5),
+         new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
+         new PathPlannerAuto("Mid Shoot to Close Bottom"),
+           new InstantCommand(()-> shooterSubsystem.stopBump()),
+           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
+           new WaitCommand(.15),
+           new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
+          new PathPlannerAuto("Close Bottom to Shoot"),
+          new WaitCommand(.5),
+          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
+          new WaitCommand(.5),
+          new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
+          new InstantCommand(()-> shooterSubsystem.stopBump()),
+          new InstantCommand(()-> intakeSubsystem.rollStop())
+  );
+
+  private final Command Top5Piece2Close2TopMid =new SequentialCommandGroup(
+     new PathPlannerAuto("Top Start"),
+     new PathPlannerAuto("Top Close Note"),
+     new PathPlannerAuto("Top Close to Shoot"),
+     new PathPlannerAuto("Shoot To Mid Close"),
+     new PathPlannerAuto("Mid Close to Shoot"),
+     new PathPlannerAuto("Top Shoot to Mid Top"),
+     new PathPlannerAuto("Mid Top to Shoot"),
+     new PathPlannerAuto("Top Shoot to Mid Top Down"),
+     new PathPlannerAuto("Mid Top Down to Shoot")
+  );
+
+
+
+  private final Command Bottom2Piece = new SequentialCommandGroup(
+     new PathPlannerAuto("Bottom Start"),
+     new PathPlannerAuto("Bottom Close"),
+     new PathPlannerAuto("Bottom Shoot")
+  );
+
+  private final Command Bottom3Close = new SequentialCommandGroup(
+     new PathPlannerAuto("Bottom Start"),
+     new PathPlannerAuto("Bottom Close"),
+     new PathPlannerAuto("Bottom Shoot"),
+     new PathPlannerAuto("Bottom Shoot To Mid Close"),
+     new PathPlannerAuto("Mid Close to Shoot")
+  );
+
+  private final Command Bottom3Mid = new SequentialCommandGroup(
+     new PathPlannerAuto("Bottom Start"),
+     new PathPlannerAuto("Bottom Close"),
+     new PathPlannerAuto("Bottom Shoot"),
+     new PathPlannerAuto("BottomMidBottom"),
+     new PathPlannerAuto("BottomMidBottom to shoot")
+  );
+  private final Command Bottom4Close2Mid = new SequentialCommandGroup(
+     new PathPlannerAuto("Bottom Start"),
+     new PathPlannerAuto("Bottom Close"),
+     new PathPlannerAuto("Bottom Shoot"),
+     new PathPlannerAuto("Bottom Shoot To Mid Close"),
+     new PathPlannerAuto("Mid Close to Shoot"),
+     new PathPlannerAuto("BottomMidBottom"),
+     new PathPlannerAuto("BottomMidBottom to shoot")
+  );
+  private final Command Bottom4CloseAll = new SequentialCommandGroup(
+     new PathPlannerAuto("Bottom Start"),
+     new PathPlannerAuto("Bottom Close"),
+     new PathPlannerAuto("Bottom Shoot"),
+     new PathPlannerAuto("Bottom Shoot To Mid Close"),
+     new PathPlannerAuto("Mid Close to Shoot"),
+     new PathPlannerAuto("Top Close Note"),
+     new PathPlannerAuto("Top Close to Shoot")
+  );
+
+
+  private final Command Mid2 = new SequentialCommandGroup(
+     new PathPlannerAuto("Mid Start"),
+     new PathPlannerAuto("Mid Pick"),
+     new PathPlannerAuto("MidShoot")
+  );
+
+  private final Command Mid3CenterMid = new SequentialCommandGroup(
+     new PathPlannerAuto("Mid Start"),
+     new PathPlannerAuto("Mid Pick"),
+     new PathPlannerAuto("MidShoot"),
+     new PathPlannerAuto("Mid Middle Pick"),
+     new PathPlannerAuto("Mid Middle Shoot")
+  );
+
+  private final Command Mid4CenterMidBelow = new SequentialCommandGroup(
+     new PathPlannerAuto("Mid Start"),
+     new PathPlannerAuto("Mid Pick"),
+     new PathPlannerAuto("MidShoot"),
+     new PathPlannerAuto("Mid Middle Pick"),
+     new PathPlannerAuto("Mid Middle Shoot"),
+     new PathPlannerAuto("Mid Middle Down Pick"),
+     new PathPlannerAuto("Mid Middle Down Shoot")
+  );
+
+  private final Command Mid4CenterMidUp = new SequentialCommandGroup(
+     new PathPlannerAuto("Mid Start"),
+     new PathPlannerAuto("Mid Pick"),
+     new PathPlannerAuto("MidShoot"),
+     new PathPlannerAuto("Mid Middle Pick"),
+     new PathPlannerAuto("Mid Middle Shoot"),
+     new PathPlannerAuto("Mid Middle Up Pick"),
+     new PathPlannerAuto("Mid Middle Up Shoot")
+  );
+
+  private final Command Mid5CenterMid3 = new SequentialCommandGroup(
+     new PathPlannerAuto("Mid Start"),
+     new PathPlannerAuto("Mid Pick"),
+     new PathPlannerAuto("MidShoot"),
+     new PathPlannerAuto("Mid Middle Pick"),
+     new PathPlannerAuto("Mid Middle Shoot"),
+     new PathPlannerAuto("Mid Middle Up Pick"),
+     new PathPlannerAuto("Mid Middle Up Shoot"),
+     new PathPlannerAuto("Mid Middle Down Pick"),
+     new PathPlannerAuto("Mid Middle Down Shoot")
+  );
+
+private final Command BottomMidRush = new SequentialCommandGroup(
+     new PathPlannerAuto("MidRush1"),
+     new PathPlannerAuto("MidRush2"),
+     new PathPlannerAuto("MidRush3"),
+     new PathPlannerAuto("MidRush4"),
+     new PathPlannerAuto("MidRush5"),
+     new PathPlannerAuto("MidRush6"),
+     new PathPlannerAuto("MidRush7")
+  );
 
 
   // simple proportional turning control with Limelight.
@@ -108,7 +400,7 @@ public class RobotContainer {
     // if it is too high, the robot will oscillate.
     // if it is too low, the robot will never reach its target
     // if the robot never turns in the correct direction, kP should be inverted.
-    double kP = .035;
+    double kP = .0175;
 
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
     // your limelight 3 feed, tx should return roughly 31 degrees.
@@ -128,7 +420,7 @@ public class RobotContainer {
   // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty"
   double limelight_range_proportional()
   {    
-    double kP = .1;
+    double kP = -.175;
     double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
     targetingForwardSpeed *= MaxSpeed;
     targetingForwardSpeed *= -1.0;
@@ -141,36 +433,43 @@ public class RobotContainer {
   private void configureBindings() {
 
     //Driver Xbox Controller
+  // default command
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() -> drive.withVelocityX(-driveStick.getLeftY() * MaxSpeed) // Drive forward with
                                                                                            // negative Y (forward)
             .withVelocityY(-driveStick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
             .withRotationalRate(-driveStick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ));
-
+//slow command
     driveStick.leftTrigger().whileTrue( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() -> drive.withVelocityX(-driveStick.getLeftY() * MaxSpeed*(.35)) // Drive forward with
                                                                                            // negative Y (forward)
             .withVelocityY(-driveStick.getLeftX() * MaxSpeed*(.35)) // Drive left with negative X (left)
             .withRotationalRate(-driveStick.getRightX() * MaxAngularRate*(.35) // Drive counterclockwise with negative X (left)
         )));    
-       
+    
+  //slow command while intake  
+    driveStick.rightTrigger().whileTrue( // Drivetrain will execute this command periodically
+        drivetrain.applyRequest(() -> drive.withVelocityX(-driveStick.getLeftY() * MaxSpeed*(.35)) // Drive forward with
+                                                                                           // negative Y (forward)
+            .withVelocityY(-driveStick.getLeftX() * MaxSpeed*(.35)) // Drive left with negative X (left)
+            .withRotationalRate(-driveStick.getRightX() * MaxAngularRate*(.35) // Drive counterclockwise with negative X (left)
+        )));       
   
     driveStick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     driveStick.b().whileTrue(drivetrain
         .applyRequest(() -> point.withModuleDirection(new Rotation2d(-driveStick.getLeftY(), -driveStick.getLeftX()))));
 
-
-
     driveStick.leftBumper().whileTrue(
 
+    //lime light aim
     drivetrain.applyRequest(() -> drive.withVelocityX(limelight_range_proportional())
             .withVelocityY(-driveStick.getLeftX() * MaxSpeed*(.4))
             .withRotationalRate(limelight_aim_proportional())));
 
             
-    // reset the field-centric heading on left bumper press
-   // driveStick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    //reset the field-centric heading on left bumper press
+    driveStick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
@@ -212,8 +511,10 @@ public class RobotContainer {
 
   }
 
+
   public RobotContainer() {
     configureBindings();
+   
     
     m_chooser.setDefaultOption("Top2Piece", Top2Piece);
     m_chooser.addOption("Top3Close", Top3Close);
@@ -227,6 +528,7 @@ public class RobotContainer {
     m_chooser.addOption("Bottom3Mid", Bottom3Mid);
     m_chooser.addOption("Bottom4Close2Mid", Bottom4Close2Mid);
     m_chooser.addOption("Bottom4CloseAll", Bottom4CloseAll);
+    m_chooser.addOption("BottomMidRush", BottomMidRush);
 
     m_chooser.addOption("Mid2", Mid2);
     m_chooser.addOption("Mid3CenterMid", Mid3CenterMid);
@@ -234,12 +536,7 @@ public class RobotContainer {
     m_chooser.addOption("Mid4CenterMidUp", Mid4CenterMidUp);
     m_chooser.addOption("Mid5CenterMid3", Mid5CenterMid3);
 
-
-
     SmartDashboard.putData(m_chooser);
-
-    
-
   }
 
     public Command getAutonomousCommand() {
