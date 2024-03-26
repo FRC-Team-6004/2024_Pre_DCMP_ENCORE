@@ -12,51 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Flywheel"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Top Start"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Bump Fly"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Bump"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Flywheel"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Bump In"
           }
         },
         {
@@ -66,74 +24,14 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Stop Intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Bump"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Bump Down"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.05
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Bump"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Flywheel"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Top Close to Shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Bump Fly"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Flywheel"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Bump"
           }
         }
       ]
     }
   },
-  "folder": "Top",
+  "folder": "AMP",
   "choreoAuto": false
 }

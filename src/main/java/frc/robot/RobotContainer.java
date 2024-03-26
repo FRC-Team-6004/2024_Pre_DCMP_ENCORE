@@ -28,6 +28,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -77,8 +78,26 @@ public class RobotContainer {
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
+  SendableChooser<Command> autoChooserAuto = new SendableChooser<>();
+  SendableChooser<Command> choiceWait = new SendableChooser<>();
+  SendableChooser<Command> choiceOne = new SendableChooser<>();
+
   
+  private final Command Wait0 = new WaitCommand(0);
+  private final Command Wait1 = new WaitCommand(1);
+  private final Command Wait2 = new WaitCommand(2);
+  private final Command Wait3 = new WaitCommand(3);
+  private final Command Wait4 = new WaitCommand(4);
+  private final Command Wait5 = new WaitCommand(5);
+  private final Command Wait6 = new WaitCommand(6);
+  private final Command Wait7 = new WaitCommand(7);
+  private final Command Wait8 = new WaitCommand(8);
+  private final Command Wait9 = new WaitCommand(9);
+  private final Command Wait10 = new WaitCommand(10);
+
+
+
+
   private final Command Top2Piece = new SequentialCommandGroup(
           new ParallelCommandGroup(
               new PathPlannerAuto("Top Start"),
@@ -404,7 +423,7 @@ private final Command BottomMidRush = new SequentialCommandGroup(
 
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
     // your limelight 3 feed, tx should return roughly 31 degrees.
-    double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kP;
+    double targetingAngularVelocity = LimelightHelpers.getTX("limelight-shoot") * kP;
 
     // convert to radians per second for our drive method
     targetingAngularVelocity *= MaxAngularRate;
@@ -421,13 +440,37 @@ private final Command BottomMidRush = new SequentialCommandGroup(
   double limelight_range_proportional()
   {    
     double kP = -.175;
-    double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
+    double targetingForwardSpeed = LimelightHelpers.getTY("limelight-shoot") * kP;
     targetingForwardSpeed *= MaxSpeed;
     targetingForwardSpeed *= -1.0;
     return targetingForwardSpeed;
   }
 
+// simple proportional turning control with Limelight.
+  // "proportional control" is a control algorithm in which the output is proportional to the error.
+  // in this case, we are going to return an angular velocity that is proportional to the 
+  // "tx" value from the Limelight.
+  double limelight_aim_proportional_intake()
+  {    
+    // kP (constant of proportionality)
+    // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
+    // if it is too high, the robot will oscillate.
+    // if it is too low, the robot will never reach its target
+    // if the robot never turns in the correct direction, kP should be inverted.
+    double kP = .0175;
 
+    // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
+    // your limelight 3 feed, tx should return roughly 31 degrees.
+    double targetingAngularVelocityIntake = LimelightHelpers.getTX("limelight") * kP;
+
+    // convert to radians per second for our drive method
+    targetingAngularVelocityIntake *= MaxAngularRate;
+
+    //invert since tx is positive when the target is to the right of the crosshair
+    targetingAngularVelocityIntake *= -1.0;
+
+    return targetingAngularVelocityIntake;
+  }
 
 
   private void configureBindings() {
@@ -455,18 +498,42 @@ private final Command BottomMidRush = new SequentialCommandGroup(
             .withVelocityY(-driveStick.getLeftX() * MaxSpeed*(.35)) // Drive left with negative X (left)
             .withRotationalRate(-driveStick.getRightX() * MaxAngularRate*(.35) // Drive counterclockwise with negative X (left)
         )));       
-  
+   
+   driveStick.rightTrigger().whileTrue(
+      new StartEndCommand(()-> intakeSubsystem.roll(1), intakeSubsystem::rollStop));
+
+   driveStick.rightTrigger().whileTrue(
+      new StartEndCommand(() -> shooterSubsystem.spinBump(.7), shooterSubsystem::stopBump));     
+
+   driveStick.rightTrigger().whileTrue(
+      new StartEndCommand(() -> shooterSubsystem.shootFlywheel(-.05), shooterSubsystem::stopBump));  
+
+   driveStick.rightBumper().whileTrue(
+      new StartEndCommand(() -> shooterSubsystem.shootFlywheel(-.05), shooterSubsystem::stopBump));  
+// Auto pickup
+    driveStick.rightBumper().whileTrue( // Drivetrain will execute this command periodically
+        drivetrain.applyRequest(() -> drive.withVelocityX(-driveStick.getLeftY() * MaxSpeed*(.35)) // Drive forward with
+                                                                                           // negative Y (forward)
+            .withVelocityY(-driveStick.getLeftX() * MaxSpeed*(.35)) // Drive left with negative X (left)
+            .withRotationalRate(limelight_aim_proportional_intake() // Drive counterclockwise with negative X (left)
+        )));  
+   driveStick.rightBumper().whileTrue(
+      new StartEndCommand(()-> intakeSubsystem.roll(1), intakeSubsystem::rollStop));
+
+   driveStick.rightBumper().whileTrue(
+      new StartEndCommand(() -> shooterSubsystem.spinBump(.7), shooterSubsystem::stopBump));       
+
+
     driveStick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     driveStick.b().whileTrue(drivetrain
         .applyRequest(() -> point.withModuleDirection(new Rotation2d(-driveStick.getLeftY(), -driveStick.getLeftX()))));
 
     driveStick.leftBumper().whileTrue(
 
-    //lime light aim
+    //lime light aim speaker
     drivetrain.applyRequest(() -> drive.withVelocityX(limelight_range_proportional())
             .withVelocityY(-driveStick.getLeftX() * MaxSpeed*(.4))
             .withRotationalRate(limelight_aim_proportional())));
-
             
     //reset the field-centric heading on left bumper press
     driveStick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
@@ -479,7 +546,7 @@ private final Command BottomMidRush = new SequentialCommandGroup(
     //Op Xbox Controller
     
     opStick.x().whileTrue(
-    new StartEndCommand(() -> shooterSubsystem.shootFlywheel(.33), shooterSubsystem::stopFlywheel));
+    new StartEndCommand(() -> shooterSubsystem.shootFlywheel(.335), shooterSubsystem::stopFlywheel));
 
     opStick.leftTrigger().whileTrue(
     new StartEndCommand(() -> shooterSubsystem.shootFlywheel(.14), shooterSubsystem::stopFlywheel));
@@ -489,12 +556,6 @@ private final Command BottomMidRush = new SequentialCommandGroup(
       
     opStick.a().whileTrue(
        new StartEndCommand(() -> shooterSubsystem.spinBump(.2), shooterSubsystem::stopBump));
-   
-    driveStick.rightTrigger().whileTrue(
-      new StartEndCommand(()-> intakeSubsystem.roll(1), intakeSubsystem::rollStop));
-
-    driveStick.rightTrigger().whileTrue(
-      new StartEndCommand(() -> shooterSubsystem.spinBump(.4), shooterSubsystem::stopBump));
 
     opStick.y().whileTrue(
        new StartEndCommand(() -> shooterSubsystem.spinBump(-.5), shooterSubsystem::stopBump));
@@ -515,34 +576,54 @@ private final Command BottomMidRush = new SequentialCommandGroup(
   public RobotContainer() {
     configureBindings();
    
-    
-    m_chooser.setDefaultOption("Top2Piece", Top2Piece);
-    m_chooser.addOption("Top3Close", Top3Close);
-    m_chooser.addOption("Top3TopMid", Top3TopMid);
-    m_chooser.addOption("Top4PieceCloseAll", Top4PieceCloseAll);
-    m_chooser.addOption("Top4Piece2CloseTopMid", Top4Piece2CloseTopMid);
-    m_chooser.addOption("Top5Piece2Close2TopMid", Top5Piece2Close2TopMid);
+    autoChooserAuto.setDefaultOption("Top4Piece2CloseTopMid", Top4Piece2CloseTopMid);
+    autoChooserAuto.addOption("Top2Piece", Top2Piece);
+    autoChooserAuto.addOption("Top3Close", Top3Close);
+    autoChooserAuto.addOption("Top3TopMid", Top3TopMid);
+    autoChooserAuto.addOption("Top4PieceCloseAll", Top4PieceCloseAll);
+    autoChooserAuto.addOption("Top5Piece2Close2TopMid", Top5Piece2Close2TopMid);
 
-    m_chooser.addOption("Bottom2Piece", Bottom2Piece);
-    m_chooser.addOption("Bottom3Close", Bottom3Close);
-    m_chooser.addOption("Bottom3Mid", Bottom3Mid);
-    m_chooser.addOption("Bottom4Close2Mid", Bottom4Close2Mid);
-    m_chooser.addOption("Bottom4CloseAll", Bottom4CloseAll);
-    m_chooser.addOption("BottomMidRush", BottomMidRush);
+    autoChooserAuto.addOption("Bottom2Piece", Bottom2Piece);
+    autoChooserAuto.addOption("Bottom3Close", Bottom3Close);
+    autoChooserAuto.addOption("Bottom3Mid", Bottom3Mid);
+    autoChooserAuto.addOption("Bottom4Close2Mid", Bottom4Close2Mid);
+    autoChooserAuto.addOption("Bottom4CloseAll", Bottom4CloseAll);
+    autoChooserAuto.addOption("BottomMidRush", BottomMidRush);
 
-    m_chooser.addOption("Mid2", Mid2);
-    m_chooser.addOption("Mid3CenterMid", Mid3CenterMid);
-    m_chooser.addOption("Mid4CenterMidBelow", Mid4CenterMidBelow);
-    m_chooser.addOption("Mid4CenterMidUp", Mid4CenterMidUp);
-    m_chooser.addOption("Mid5CenterMid3", Mid5CenterMid3);
+    autoChooserAuto.addOption("Mid2", Mid2);
+    autoChooserAuto.addOption("Mid3CenterMid", Mid3CenterMid);
+    autoChooserAuto.addOption("Mid4CenterMidBelow", Mid4CenterMidBelow);
+    autoChooserAuto.addOption("Mid4CenterMidUp", Mid4CenterMidUp);
+    autoChooserAuto.addOption("Mid5CenterMid3", Mid5CenterMid3);
 
-    SmartDashboard.putData(m_chooser);
+   choiceWait.setDefaultOption("0 Seconds", Wait0);
+   choiceWait.addOption("1 Seconds", Wait1);
+   choiceWait.addOption("2 Seconds", Wait2);
+   choiceWait.addOption("3 Seconds", Wait3);
+   choiceWait.addOption("4 Seconds", Wait4);
+   choiceWait.addOption("5 Seconds", Wait5);
+   choiceWait.addOption("6 Seconds", Wait6);
+   choiceWait.addOption("7 Seconds", Wait7);
+   choiceWait.addOption("8 Seconds", Wait8);
+   choiceWait.addOption("9 Seconds", Wait9);
+   choiceWait.addOption("10 Seconds", Wait10);
+
+
+
+
+   SmartDashboard.putData(choiceWait);
+
+    SmartDashboard.putData(autoChooserAuto);
+
   }
 
     public Command getAutonomousCommand() {
       
 
-      return m_chooser.getSelected();
+      return new SequentialCommandGroup(
+      choiceWait.getSelected(),
+      autoChooserAuto.getSelected()
+      );
       
 /* 
 

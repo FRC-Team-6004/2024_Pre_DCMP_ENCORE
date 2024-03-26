@@ -56,7 +56,7 @@ public class ShooterSubsystem extends SubsystemBase {
         var bottomMotorConfiguration = new TalonFXConfiguration();
         var topMotorConfiguration = new TalonFXConfiguration();
         var bumpMotorConfiguration = new TalonFXConfiguration();
-
+/* 
         bottomMotorConfiguration.MotorOutput.Inverted = ShooterConstants.SHOOTER_INVERSION;
         bottomMotorConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         bottomMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 55;
@@ -71,7 +71,7 @@ public class ShooterSubsystem extends SubsystemBase {
         bumpMotorConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         bumpMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 55;
         bumpMotorConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
-
+*/
         topFalcon.setControl(new Follower(bottomFalcon.getDeviceID(), true));
    
     }
@@ -123,8 +123,8 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void stopFlywheel() {
-        bottomFalcon.set(0);
-        topFalcon.set(0);
+        bottomFalcon.set(-.005);
+        topFalcon.set(-.005);
         System.out.println("Stop Shoot");
     }
 

@@ -41,7 +41,9 @@ public class Robot extends LoggedRobot {
 
   
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+     CommandScheduler.getInstance().cancelAll();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -60,25 +62,11 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {
-/* 
-       if (DriverStation.getAlliance().isPresent()) {
-            if (DriverStation.getAlliance().get() == (DriverStation.Alliance.Red)) {
-                if (lastResult != null && lastResult.valid) {
-                    Pose2d llPose = lastResult.getBotPose2d_wpiRed();
-                    m_robotContainer.drivetrain.addVisionMeasurement(llPose, Timer.getFPGATimestamp());
-                }
-            } else {
-                if (lastResult != null && lastResult.valid) {
-                    Pose2d llPose = lastResult.getBotPose2d_wpiBlue();
-                    m_robotContainer.drivetrain.addVisionMeasurement(llPose, Timer.getFPGATimestamp());
-                }
-            }
-        }  */
-  }
+  public void autonomousPeriodic() {}
 
   @Override
-  public void autonomousExit() {}
+  public void autonomousExit() {
+  }
 
   @Override
   public void teleopInit() {
@@ -88,25 +76,11 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {
-
-    if (DriverStation.getAlliance().isPresent()) {
-      if (DriverStation.getAlliance().get() == (DriverStation.Alliance.Red)) {
-          if (lastResult != null && lastResult.valid) {
-              Pose2d llPose = lastResult.getBotPose2d_wpiRed();
-              m_robotContainer.drivetrain.addVisionMeasurement(llPose, Timer.getFPGATimestamp());
-          }
-      } else {
-          if (lastResult != null && lastResult.valid) {
-              Pose2d llPose = lastResult.getBotPose2d_wpiBlue();
-              m_robotContainer.drivetrain.addVisionMeasurement(llPose, Timer.getFPGATimestamp());
-          }
-      }
-  }
-  }
+  public void teleopPeriodic() {}
 
   @Override
-  public void teleopExit() {}
+  public void teleopExit() {
+  }
 
   @Override
   public void testInit() {
