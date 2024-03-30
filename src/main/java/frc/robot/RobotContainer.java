@@ -80,13 +80,6 @@ public class RobotContainer {
 
   SendableChooser<Command> autoChooserAuto = new SendableChooser<>();
   SendableChooser<Command> choiceWait = new SendableChooser<>();
-  SendableChooser<Command> choiceStart = new SendableChooser<>();
-  SendableChooser<Command> choiceNote1 = new SendableChooser<>();
-  SendableChooser<Command> choiceNote2 = new SendableChooser<>();
-  SendableChooser<Command> choiceNote3 = new SendableChooser<>();
-  SendableChooser<Command> choiceNote4 = new SendableChooser<>();
-
-
   
   private final Command Wait0 = new WaitCommand(0);
   private final Command Wait1 = new WaitCommand(1);
@@ -99,190 +92,6 @@ public class RobotContainer {
   private final Command Wait8 = new WaitCommand(8);
   private final Command Wait9 = new WaitCommand(9);
   private final Command Wait10 = new WaitCommand(10);
-
-
-  private final Command AmpSideStart = new SequentialCommandGroup(
-           new ParallelCommandGroup(
-              new PathPlannerAuto("Top Start"),
-              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.29))),
-           new WaitCommand(.5),
-           new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
-           new WaitCommand(.5),
-           new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
-           new InstantCommand(()-> shooterSubsystem.stopBump())
-  );
-    private final Command MidStart = new SequentialCommandGroup(
-           new ParallelCommandGroup(
-              new PathPlannerAuto("Mid Start"),
-              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.29))),
-           new WaitCommand(.5),
-           new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
-           new WaitCommand(.5),
-           new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
-           new InstantCommand(()-> shooterSubsystem.stopBump())
-  );
-    private final Command SourceSideStart = new SequentialCommandGroup(
-           new ParallelCommandGroup(
-              new PathPlannerAuto("Bottom Start"),
-              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.29))),
-           new WaitCommand(.5),
-           new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
-           new WaitCommand(.5),
-           new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
-           new InstantCommand(()-> shooterSubsystem.stopBump())
-  );
-
-  private final Command NoteC1 = new SequentialCommandGroup(
-           new InstantCommand(()-> intakeSubsystem.roll(1)),
-           new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
-           new PathPlannerAuto("Top Close Note"),
-           new InstantCommand(()-> shooterSubsystem.stopBump()),
-           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
-           new WaitCommand(.15),
-          // new InstantCommand(()-> intakeSubsystem.rollStop()),
-           new ParallelCommandGroup(
-              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
-              new PathPlannerAuto("Top Close to Shoot")),
-          //new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
-          new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
-          new InstantCommand(()-> shooterSubsystem.stopBump()),
-          new InstantCommand(()-> intakeSubsystem.rollStop())
-  );
-
-  private final Command NoteC2 = new SequentialCommandGroup(
-           new InstantCommand(()-> intakeSubsystem.roll(1)),
-           new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
-           new PathPlannerAuto("Mid Pick"),
-           new InstantCommand(()-> shooterSubsystem.stopBump()),
-           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
-           new WaitCommand(.15),
-          // new InstantCommand(()-> intakeSubsystem.rollStop()),
-           new ParallelCommandGroup(
-              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
-              new PathPlannerAuto("MidShoot")),
-          //new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
-          new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
-          new InstantCommand(()-> shooterSubsystem.stopBump()),
-          new InstantCommand(()-> intakeSubsystem.rollStop())
-  );
-
-  private final Command NoteC3 = new SequentialCommandGroup(
-           new InstantCommand(()-> intakeSubsystem.roll(1)),
-           new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
-           new PathPlannerAuto("Mid Shoot to Close Bottom"),
-           new InstantCommand(()-> shooterSubsystem.stopBump()),
-           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
-           new WaitCommand(.15),
-          // new InstantCommand(()-> intakeSubsystem.rollStop()),
-           new ParallelCommandGroup(
-              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
-              new PathPlannerAuto("Close Bottom to Shoot")),
-          //new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
-          new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
-          new InstantCommand(()-> shooterSubsystem.stopBump()),
-          new InstantCommand(()-> intakeSubsystem.rollStop())
-  );
-
-    private final Command NoteM1 = new SequentialCommandGroup(
-           new InstantCommand(()-> intakeSubsystem.roll(1)),
-           new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
-           new PathPlannerAuto("Top Shoot to Mid Top"),
-           new InstantCommand(()-> shooterSubsystem.stopBump()),
-           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
-           new WaitCommand(.15),
-          // new InstantCommand(()-> intakeSubsystem.rollStop()),
-           new ParallelCommandGroup(
-              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
-              new PathPlannerAuto("Mid Top to Shoot")),
-          //new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
-          new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
-          new InstantCommand(()-> shooterSubsystem.stopBump()),
-          new InstantCommand(()-> intakeSubsystem.rollStop())
-  );
-
-  private final Command NoteM2 = new SequentialCommandGroup(
-           new InstantCommand(()-> intakeSubsystem.roll(1)),
-           new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
-           new PathPlannerAuto("Mid Top Down to Shoot"),
-           new InstantCommand(()-> shooterSubsystem.stopBump()),
-           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
-           new WaitCommand(.15),
-          // new InstantCommand(()-> intakeSubsystem.rollStop()),
-           new ParallelCommandGroup(
-              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
-              new PathPlannerAuto("Close Bottom to Shoot")),
-          //new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
-          new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
-          new InstantCommand(()-> shooterSubsystem.stopBump()),
-          new InstantCommand(()-> intakeSubsystem.rollStop())
-  );
-
-  private final Command NoteM3 = new SequentialCommandGroup(
-           new InstantCommand(()-> intakeSubsystem.roll(1)),
-           new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
-           new PathPlannerAuto("Mid Middle Pick"),
-           new InstantCommand(()-> shooterSubsystem.stopBump()),
-           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
-           new WaitCommand(.15),
-          // new InstantCommand(()-> intakeSubsystem.rollStop()),
-           new ParallelCommandGroup(
-              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
-              new PathPlannerAuto("Mid Middle Shoot")),
-          //new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
-          new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
-          new InstantCommand(()-> shooterSubsystem.stopBump()),
-          new InstantCommand(()-> intakeSubsystem.rollStop())
-  );
-
-    private final Command NoteM4 = new SequentialCommandGroup(
-           new InstantCommand(()-> intakeSubsystem.roll(1)),
-           new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
-           new PathPlannerAuto("MidRush2"),
-           new InstantCommand(()-> shooterSubsystem.stopBump()),
-           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
-           new WaitCommand(.15),
-          // new InstantCommand(()-> intakeSubsystem.rollStop()),
-           new ParallelCommandGroup(
-              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
-              new PathPlannerAuto("MidRush3")),
-          //new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
-          new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
-          new InstantCommand(()-> shooterSubsystem.stopBump()),
-          new InstantCommand(()-> intakeSubsystem.rollStop())
-  );
-
-  private final Command NoteM5 = new SequentialCommandGroup(
-           new InstantCommand(()-> intakeSubsystem.roll(1)),
-           new InstantCommand(()-> shooterSubsystem.spinBump(.2)),
-           new PathPlannerAuto("MidRush4"),
-           new InstantCommand(()-> shooterSubsystem.stopBump()),
-           new InstantCommand(()-> shooterSubsystem.spinBump(-.2)),
-           new WaitCommand(.15),
-          // new InstantCommand(()-> intakeSubsystem.rollStop()),
-           new ParallelCommandGroup(
-              new InstantCommand(()-> shooterSubsystem.shootFlywheel(.3)),
-              new PathPlannerAuto("MidRush5")),
-          //new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.spinBump(.4)),
-          new WaitCommand(.5),
-          new InstantCommand(()-> shooterSubsystem.stopFlywheel()),
-          new InstantCommand(()-> shooterSubsystem.stopBump()),
-          new InstantCommand(()-> intakeSubsystem.rollStop())
-  );
 
   private final Command Top2Piece = new SequentialCommandGroup(
           new ParallelCommandGroup(
@@ -794,56 +603,11 @@ private final Command BottomMidRush = new SequentialCommandGroup(
    choiceWait.addOption("9 Seconds", Wait9);
    choiceWait.addOption("10 Seconds", Wait10);
 
-   choiceStart.setDefaultOption("Amp", AmpSideStart);
-   choiceStart.addOption("Mid", MidStart);
-   choiceStart.addOption("Source", SourceSideStart);
 
-   choiceNote1.setDefaultOption("NoteC1", NoteC1);
-   choiceNote1.addOption("NoteC2", NoteC2);
-   choiceNote1.addOption("NoteC3", NoteC3);
-   choiceNote1.addOption("NoteM1", NoteM1);
-   choiceNote1.addOption("NoteM2", NoteM2);
-   choiceNote1.addOption("NoteM3", NoteM3);
-   choiceNote1.addOption("NoteM4", NoteM4);
-   choiceNote1.addOption("NoteM5", NoteM5);
-   choiceNote1.addOption("None", null);
-
-   choiceNote2.setDefaultOption("None", null);
-   choiceNote2.addOption("NoteC1", NoteC1);
-   choiceNote2.addOption("NoteC2", NoteC2);
-   choiceNote2.addOption("NoteC3", NoteC3);
-   choiceNote2.addOption("NoteM1", NoteM1);
-   choiceNote2.addOption("NoteM2", NoteM2);
-   choiceNote2.addOption("NoteM3", NoteM3);
-   choiceNote2.addOption("NoteM4", NoteM4);
-   choiceNote2.addOption("NoteM5", NoteM5);
-      
-   choiceNote3.setDefaultOption("None", null);
-   choiceNote3.addOption("NoteC1", NoteC1);
-   choiceNote3.addOption("NoteC2", NoteC2);
-   choiceNote3.addOption("NoteC3", NoteC3);
-   choiceNote3.addOption("NoteM1", NoteM1);
-   choiceNote3.addOption("NoteM2", NoteM2);
-   choiceNote3.addOption("NoteM3", NoteM3);
-   choiceNote3.addOption("NoteM4", NoteM4);
-   choiceNote3.addOption("NoteM5", NoteM5);
-    
-   choiceNote4.setDefaultOption("None", null);
-   choiceNote4.addOption("NoteC1", NoteC1);
-   choiceNote4.addOption("NoteC2", NoteC2);
-   choiceNote4.addOption("NoteC3", NoteC3);
-   choiceNote4.addOption("NoteM1", NoteM1);
-   choiceNote4.addOption("NoteM2", NoteM2);
-   choiceNote4.addOption("NoteM3", NoteM3);
-   choiceNote4.addOption("NoteM4", NoteM4);
-   choiceNote4.addOption("NoteM5", NoteM5);
    
    SmartDashboard.putData(choiceWait);
-   SmartDashboard.putData(choiceStart);
-   SmartDashboard.putData(choiceNote1);
-   SmartDashboard.putData(choiceNote2);
-   SmartDashboard.putData(choiceNote3);
-   SmartDashboard.putData(choiceNote4);
+   SmartDashboard.putData(autoChooserAuto);
+
 
   // SmartDashboard.putData(autoChooserAuto);
 
@@ -854,11 +618,7 @@ private final Command BottomMidRush = new SequentialCommandGroup(
 
       return new SequentialCommandGroup(
       choiceWait.getSelected(),
-      choiceStart.getSelected(),
-      choiceNote1.getSelected(),
-      choiceNote2.getSelected(),
-      choiceNote3.getSelected(),
-      choiceNote4.getSelected()
+      autoChooserAuto.getSelected()
       );
       
 /* 
