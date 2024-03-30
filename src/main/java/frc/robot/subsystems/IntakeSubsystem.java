@@ -16,15 +16,19 @@ import frc.robot.constants.ShooterConstants;
 public class IntakeSubsystem extends SubsystemBase {
     TalonFX intakeFront;
     TalonFX intakeBack;
+    TalonFX intakeMiddle;
 
     public static IntakeSubsystem m_Instance = null;
 
     public IntakeSubsystem() {
         intakeFront = new TalonFX(IntakeConstants.INTAKE_FRONT_ID);
         intakeBack = new TalonFX(IntakeConstants.INTAKE_BACK_ID);
+        intakeMiddle = new TalonFX(IntakeConstants.INTAKE_MIDDLE_ID);
 
         var intakeFrontConfiguration = new TalonFXConfiguration();
         var intakeBackConfiguration = new TalonFXConfiguration();
+        var intakeMiddleConfiguration = new TalonFXConfiguration();
+
 
         intakeFrontConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         intakeFrontConfiguration.CurrentLimits.SupplyCurrentLimit = 55;
@@ -34,9 +38,15 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeBackConfiguration.CurrentLimits.SupplyCurrentLimit = 55;
         intakeBackConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
 
+        intakeMiddleConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        intakeMiddleConfiguration.CurrentLimits.SupplyCurrentLimit = 55;
+        intakeMiddleConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
+
 
 
         intakeFront.setControl(new Follower(intakeBack.getDeviceID(), true));
+        intakeFront.setControl(new Follower(intakeMiddle.getDeviceID(), true));
+
 
     }
 
@@ -57,6 +67,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void roll(double speed) {
         intakeFront.set(speed);
         intakeBack.set(speed);
+        intakeMiddle.set(speed);
         System.out.println("Intake");
 
     } 
@@ -64,6 +75,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void rollStop() {
         intakeFront.set(0);
         intakeBack.set(0);
+        intakeMiddle.set(0);
         System.out.println("Stop Intake");
 
     //    System.out.println("STOP");
