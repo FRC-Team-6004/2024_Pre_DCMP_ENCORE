@@ -41,7 +41,7 @@ public final class ShooterConstants {
             withKV(SHOOTER_V);
 
 
-    public static final int SHOOTER_BUMP = 42; //ids i hope pleaseeeee
+    public static final int SHOOTER_BUMP = 13; //ids i hope pleaseeeee
     public static final int BEAM_BREAK = 0;
     public static final double STAGE_SPEED = 0;
 }

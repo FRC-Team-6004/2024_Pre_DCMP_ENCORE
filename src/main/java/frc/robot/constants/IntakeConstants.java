@@ -5,9 +5,9 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public final class IntakeConstants {
-    public static final int INTAKE_FRONT_ID= 5;
-    public static final int INTAKE_BACK_ID= 12;
-    public static final int INTAKE_MIDDLE_ID= 35;
+    public static final int INTAKE_FRONT_ID=20;
+    public static final int INTAKE_BACK_ID= 2;
+    public static final int INTAKE_MIDDLE_ID= 1;
 
 
     public static final InvertedValue INTAKE_INVERSION = InvertedValue.Clockwise_Positive;

@@ -45,7 +45,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drivetrain.generated.TunerConstants;
 import frc.robot.util.LimelightHelpers;
 //import frc.robot.util.controllerUtils.MultiButton;
-//import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -55,7 +54,6 @@ import frc.robot.subsystems.drivetrain.*;
 
 public class RobotContainer {
     public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-//    public final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
     public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public final VisionSubsystem visionSubsystem = new VisionSubsystem();
 
@@ -418,7 +416,7 @@ private final Command BottomMidRush = new SequentialCommandGroup(
 
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
     // your limelight 3 feed, tx should return roughly 31 degrees.
-    double targetingAngularVelocity = LimelightHelpers.getTX("limelight-shoot") * kP;
+    double targetingAngularVelocity = LimelightHelpers.getTX("limelight-shooter") * kP;
 
     // convert to radians per second for our drive method
     targetingAngularVelocity *= MaxAngularRate;
@@ -434,8 +432,8 @@ private final Command BottomMidRush = new SequentialCommandGroup(
   // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty"
   double limelight_range_proportional()
   {    
-    double kP = -.175;
-    double targetingForwardSpeed = LimelightHelpers.getTY("limelight-shoot") * kP;
+    double kP = .25;
+    double targetingForwardSpeed = LimelightHelpers.getTY("limelight-shooter") * kP;
     targetingForwardSpeed *= MaxSpeed;
     targetingForwardSpeed *= -1.0;
     return targetingForwardSpeed;
@@ -456,7 +454,7 @@ private final Command BottomMidRush = new SequentialCommandGroup(
 
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
     // your limelight 3 feed, tx should return roughly 31 degrees.
-    double targetingAngularVelocityIntake = LimelightHelpers.getTX("limelight") * kP;
+    double targetingAngularVelocityIntake = LimelightHelpers.getTX("limelight-intake") * kP;
 
     // convert to radians per second for our drive method
     targetingAngularVelocityIntake *= MaxAngularRate;
@@ -467,6 +465,14 @@ private final Command BottomMidRush = new SequentialCommandGroup(
     return targetingAngularVelocityIntake;
   }
 
+   double limelight_range_proportional_intake()
+  {    
+    double kP = -.25;
+    double targetingForwardSpeed = LimelightHelpers.getTY("limelight-intake") * kP;
+    targetingForwardSpeed *= MaxSpeed;
+    targetingForwardSpeed *= -1.0;
+    return targetingForwardSpeed;
+  }
 
   private void configureBindings() {
 
@@ -480,36 +486,36 @@ private final Command BottomMidRush = new SequentialCommandGroup(
         ));
 //slow command
     driveStick.leftTrigger().whileTrue( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(-driveStick.getLeftY() * MaxSpeed*(.35)) // Drive forward with
+        drivetrain.applyRequest(() -> drive.withVelocityX(-driveStick.getLeftY() * MaxSpeed*(.5)) // Drive forward with
                                                                                            // negative Y (forward)
-            .withVelocityY(-driveStick.getLeftX() * MaxSpeed*(.35)) // Drive left with negative X (left)
+            .withVelocityY(-driveStick.getLeftX() * MaxSpeed*(.5)) // Drive left with negative X (left)
             .withRotationalRate(-driveStick.getRightX() * MaxAngularRate*(.35) // Drive counterclockwise with negative X (left)
         )));    
     
-  //slow command while intake  
+  //slow command while intaking  
     driveStick.rightTrigger().whileTrue( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(-driveStick.getLeftY() * MaxSpeed*(.35)) // Drive forward with
+        drivetrain.applyRequest(() -> drive.withVelocityX(-driveStick.getLeftY() * MaxSpeed*(.6)) // Drive forward with
                                                                                            // negative Y (forward)
             .withVelocityY(-driveStick.getLeftX() * MaxSpeed*(.35)) // Drive left with negative X (left)
-            .withRotationalRate(-driveStick.getRightX() * MaxAngularRate*(.35) // Drive counterclockwise with negative X (left)
+            .withRotationalRate(-driveStick.getRightX() * MaxAngularRate*(.6) // Drive counterclockwise with negative X (left)
         )));       
    
    driveStick.rightTrigger().whileTrue(
-      new StartEndCommand(()-> intakeSubsystem.roll(1), intakeSubsystem::rollStop));
+      new StartEndCommand(()-> intakeSubsystem.roll(.3), intakeSubsystem::rollStop));
 
    driveStick.rightTrigger().whileTrue(
-      new StartEndCommand(() -> shooterSubsystem.spinBump(.7), shooterSubsystem::stopBump));     
+      new StartEndCommand(() -> shooterSubsystem.spinBump(.5), shooterSubsystem::stopBump));     
 
    driveStick.rightTrigger().whileTrue(
-      new StartEndCommand(() -> shooterSubsystem.shootFlywheel(-.05), shooterSubsystem::stopBump));  
+      new StartEndCommand(() -> shooterSubsystem.shootFlywheel(-.075), shooterSubsystem::stopBump));  
 
    driveStick.rightBumper().whileTrue(
-      new StartEndCommand(() -> shooterSubsystem.shootFlywheel(-.05), shooterSubsystem::stopBump));  
+      new StartEndCommand(() -> shooterSubsystem.shootFlywheel(-.075), shooterSubsystem::stopBump));  
 // Auto pickup
     driveStick.rightBumper().whileTrue( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(-driveStick.getLeftY() * MaxSpeed*(.35)) // Drive forward with
+        drivetrain.applyRequest(() -> drive.withVelocityX((-driveStick.getLeftY() * MaxSpeed*(.6))) // Drive forward with
                                                                                            // negative Y (forward)
-            .withVelocityY(-driveStick.getLeftX() * MaxSpeed*(.35)) // Drive left with negative X (left)
+            .withVelocityY(-driveStick.getLeftX() * MaxSpeed*(.50)) // Drive left with negative X (left)
             .withRotationalRate(limelight_aim_proportional_intake() // Drive counterclockwise with negative X (left)
         )));  
    driveStick.rightBumper().whileTrue(
@@ -526,11 +532,11 @@ private final Command BottomMidRush = new SequentialCommandGroup(
     driveStick.leftBumper().whileTrue(
 
     //lime light aim speaker
-    drivetrain.applyRequest(() -> drive.withVelocityX(limelight_range_proportional())
+    drivetrain.applyRequest(() -> drive.withVelocityX(limelight_range_proportional()*MaxSpeed)
             .withVelocityY(-driveStick.getLeftX() * MaxSpeed*(.4))
             .withRotationalRate(limelight_aim_proportional())));
             
-    //reset the field-centric heading on left bumper press
+    //reset the field-centric heading on y button press
     driveStick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     if (Utils.isSimulation()) {
@@ -615,12 +621,14 @@ private final Command BottomMidRush = new SequentialCommandGroup(
 
     public Command getAutonomousCommand() {
       
-
-      return new SequentialCommandGroup(
+return new PathPlannerAuto("Forward");
+   /*    return new SequentialCommandGroup(
       choiceWait.getSelected(),
       autoChooserAuto.getSelected()
       );
+ */
       
+
 /* 
 
       return new SequentialCommandGroup(
